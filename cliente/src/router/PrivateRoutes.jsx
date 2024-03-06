@@ -1,7 +1,9 @@
 
 import { CrearParty } from "../Paginas/CrearParty/CrearParty";
 import { Error404 } from "../Paginas/Error404/Error404";
+import { Host } from "../Paginas/Host/Host";
 import { Inicio } from "../Paginas/Inicio/Inicio";
+import { Invitado } from "../Paginas/Invitado/Invitado";
 import { UnirseParty } from "../Paginas/UnirseParty/UnirseParty";
 
 
@@ -18,6 +20,14 @@ export const PrivateRoutes = () => {
         {
           path: "/crear-party",
           element: <CrearParty/> ,
+        },
+        {
+          path: "/party/:Id/:Nombre/",
+          element: <Host/> ,
+        },
+        {
+          path: "/party/invitado/:Id",
+          element: <Invitado/> ,
         },
         {
           path: "/unirse-party",

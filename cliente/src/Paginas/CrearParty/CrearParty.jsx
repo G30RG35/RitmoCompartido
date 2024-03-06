@@ -2,8 +2,15 @@ import { Button, Grid, TextField } from "@mui/material";
 import React from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
+import io from "socket.io-client";
 
 export const CrearParty = () => {
+  const socket = io.connect("localhost:3000", {
+    query: {
+      role: "host",
+    },
+  });
+
   const navigate = useNavigate();
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
@@ -13,7 +20,7 @@ export const CrearParty = () => {
   });
 
   function Crear() {
-    console.log(dataForm);
+    navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre);
   }
 
   function Regresar() {
@@ -53,16 +60,15 @@ export const CrearParty = () => {
           value={dataForm.Password}
         />
 
-           <div className="divButons">
-           <Button onClick={Regresar} variant="contained">
-              Regresar
-            </Button>
+        <div className="divButons">
+          <Button onClick={Regresar} variant="contained">
+            Regresar
+          </Button>
 
-            <Button onClick={Crear} variant="contained">
-              Crear
-            </Button>
-           </div>
-
+          <Button onClick={Crear} variant="contained">
+            Crear
+          </Button>
+        </div>
       </div>
     </>
   );
