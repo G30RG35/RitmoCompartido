@@ -36,6 +36,27 @@ io.on("connection", (socket) => {
     console.log("Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre)
   });
 
+   socket.on("BuscarParty", (data) => {
+    const id= data.Id
+    const pass = data.Pass
+
+   const Sala=salas.find((sala) =>
+     sala.id==id
+             )
+     if(Sala!=undefined){
+       if(Sala.pass==pass){
+         socket.join(id);
+         console.log("Usuario conectado")
+       }else{
+         console.log("Pasword incorecta")
+       }
+    }else{
+       console.log("Sala no encontrada")
+    }
+  });
+
+  
+
   socket.on("UsuarioDesconectado", (data) => {
     if (data == 2) {
       console.log(`El host se desconecto`);
