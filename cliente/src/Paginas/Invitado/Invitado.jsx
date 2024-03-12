@@ -8,7 +8,12 @@ import { socket } from "../../socket";
 export const Invitado = () => {
 
   let { Id: Id } = useParams();
+  //Falta pasar la password
 
+  useEffect(() => {
+    socket.emit('BuscarParty',{Id,Pass});
+}, []);
+  
   const [Nombre, setNombre] = useState("");
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
