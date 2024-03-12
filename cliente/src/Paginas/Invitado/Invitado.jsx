@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
+import { socket } from "../../socket";
 
 export const Invitado = () => {
+
   let { Id: Id } = useParams();
 
   const [Nombre, setNombre] = useState("");
@@ -13,9 +15,10 @@ export const Invitado = () => {
     Texto: "",
   });
 
-  function Buscar() {
-    Console.log(dataForm);
-  }
+  const Buscar = () => {
+    socket.emit('Peticion', dataForm.Texto);
+  };
+
 
   const TraerDatos = () => {
     setNombre("Eduardos");

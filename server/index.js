@@ -10,9 +10,7 @@ const io = new SocketServer(server, {
   },
 });
 
-// io.on('connection',socket=>{
-//     console.log("Cliente Conectado")
-// })
+let hostConect=false
 
 io.on("connection", (socket) => {
   if (socket.handshake.query.role === "host") {
@@ -20,6 +18,18 @@ io.on("connection", (socket) => {
   } else {
     console.log("Invitado conectado");
   }
+  socket.on("Peticion", (data) => {
+    console.log(data);
+  });
+
+  socket.on("UsuarioDesconectado", (data) => {
+    if (data == 2) {
+      console.log(`El host se desconecto`);
+      hostConect=false
+    } else {
+      console.log(`El Usuario se desconecto`);
+    }
+  });
 });
 
 server.listen(3000);
