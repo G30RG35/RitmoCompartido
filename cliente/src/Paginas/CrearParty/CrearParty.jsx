@@ -16,11 +16,11 @@ export const CrearParty = () => {
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Id: "",
     Nombre: "",
-    Password: "",
+    Pass: "",
   });
 
   function Crear() {
-    navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre);
+    navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
   }
 
   function Regresar() {
@@ -57,7 +57,7 @@ export const CrearParty = () => {
           variant="filled"
           onChange={onChangeInput}
           name="Password"
-          value={dataForm.Password}
+          value={dataForm.Pass}
         />
 
         <div className="divButons">

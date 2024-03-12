@@ -13,13 +13,38 @@ const io = new SocketServer(server, {
 let hostConect=false
 
 io.on("connection", (socket) => {
-  if (socket.handshake.query.role === "host") {
-    console.log("Host conectado");
-  } else {
-    console.log("Invitado conectado");
-  }
+  // if (socket.handshake.query.role === "host") {
+  //   console.log("Host conectado");
+  // } else {
+  //   console.log("Invitado conectado");
+  // }
   socket.on("Peticion", (data) => {
     console.log(data);
+  });
+
+  
+
+  const salas = [];
+
+  socket.on("CrearParty", (data) => {
+    const id= data.Id
+    const nombre = data.Nombre
+    const pass = data.Pass
+
+    // function generarArraySalas(salas) {
+    //   const arraySalas = [];
+    
+    //   for (const sala of salas) {
+    //     arraySalas.push({
+    //       SalaId: id,
+    //       Nombre: nombre,
+    //       Pass: pass,
+    //     });
+    //   }
+    //   return arraySalas;
+    // }
+
+    console.log("Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre)
   });
 
   socket.on("UsuarioDesconectado", (data) => {

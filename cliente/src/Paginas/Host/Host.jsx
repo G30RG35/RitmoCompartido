@@ -1,19 +1,30 @@
 import { Button, TextField } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
+import { socket } from "../../socket";
 export const Host = () => {
+  
   let { Id: Id } = useParams();
   let { Nombre: Nombre } = useParams();
+  let { Pass: Pass } = useParams();
+
+  useEffect(() => {
+    socket.emit("CrearParty", {
+      Id: Id,
+      Nombre: Nombre,
+      Pass:Pass,
+    });
+  }, []);
+
+  const Buscar = ()=>{
+    console.log("Buscar")
+  }
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
   });
-
-  function Buscar() {
-    Console.log(dataForm);
-  }
 
   return (
     <>
