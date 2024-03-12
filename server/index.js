@@ -31,19 +31,8 @@ io.on("connection", (socket) => {
     const nombre = data.Nombre
     const pass = data.Pass
 
-    // function generarArraySalas(salas) {
-    //   const arraySalas = [];
-    
-    //   for (const sala of salas) {
-    //     arraySalas.push({
-    //       SalaId: id,
-    //       Nombre: nombre,
-    //       Pass: pass,
-    //     });
-    //   }
-    //   return arraySalas;
-    // }
-
+    salas.push({id: id,nombre: nombre,pass: pass})
+    console.log("Salas: "+salas)
     console.log("Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre)
   });
 
