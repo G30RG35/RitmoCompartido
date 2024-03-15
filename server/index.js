@@ -24,7 +24,6 @@ io.on("connection", (socket) => {
     const nombre = data.Nombre;
     const pass = data.Pass;
 
-<<<<<<< HEAD
     const objectAux = { id: id, nombre: nombre, pass: pass };
     salas.push(objectAux);
 
@@ -38,11 +37,6 @@ io.on("connection", (socket) => {
     console.log("id = "+data.id+" pass = "+data.pass)
     // const salaEncontrada=salas.find((sala)=>data.id==sala.id);
     // console.log(salaEncontrada)
-=======
-    salas.push({id: id,nombre: nombre,pass: pass})
-    console.log("Salas: "+salas)
-    console.log("Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre)
->>>>>>> f2d0014dd3884ccd97ded0381c6da853e6697cb4
   });
 
    socket.on("BuscarParty", (data) => {

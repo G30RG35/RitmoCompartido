@@ -8,11 +8,7 @@ import { socket } from "../../socket";
 export const Invitado = () => {
 
   let { Id: Id } = useParams();
-<<<<<<< HEAD
   let { Pass: Pass } = useParams();
-=======
-  //Falta pasar la password
->>>>>>> f2d0014dd3884ccd97ded0381c6da853e6697cb4
 
   useEffect(() => {
     socket.emit('BuscarParty',{Id,Pass});
