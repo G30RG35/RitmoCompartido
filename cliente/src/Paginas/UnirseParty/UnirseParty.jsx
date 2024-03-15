@@ -2,14 +2,8 @@ import { Button, TextField } from "@mui/material";
 import React from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
 
 export const UnirseParty = () => {
-  const socket = io.connect("localhost:3000", {
-    query: {
-      role: "Invitado",
-    },
-  });
 
   const navigate = useNavigate();
 
