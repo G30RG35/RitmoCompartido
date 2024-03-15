@@ -19,7 +19,7 @@ export const UnirseParty = () => {
   });
 
   function Unirse() {
-    navigate("/party/invitado/" + dataForm.Id);
+    navigate("/party/invitado/" + dataForm.Id+dataForm.Password);
   }
 
   function Regresar() {

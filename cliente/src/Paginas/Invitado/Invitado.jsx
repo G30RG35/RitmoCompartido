@@ -8,6 +8,7 @@ import { socket } from "../../socket";
 export const Invitado = () => {
 
   let { Id: Id } = useParams();
+  let { Pass: Pass } = useParams();
 
   const [Nombre, setNombre] = useState("");
 
@@ -26,6 +27,12 @@ export const Invitado = () => {
 
   useEffect(() => {
     TraerDatos();
+    
+    const datos={
+      id: Id,
+      pass:Pass,
+    }
+    socket.emit("UnirseParty",datos);
   }, []);
 
   return (

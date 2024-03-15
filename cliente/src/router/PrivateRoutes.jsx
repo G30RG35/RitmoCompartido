@@ -22,11 +22,11 @@ export const PrivateRoutes = () => {
           element: <CrearParty/> ,
         },
         {
-          path: "/party/:Id/:Nombre/",
+          path: "/party/:Id/:Nombre/:Pass",
           element: <Host/> ,
         },
         {
-          path: "/party/invitado/:Id",
+          path: "/party/invitado/:Id/:Pass",
           element: <Invitado/> ,
         },
         {

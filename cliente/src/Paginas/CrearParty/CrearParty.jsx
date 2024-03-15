@@ -56,7 +56,7 @@ export const CrearParty = () => {
           label="Contraseña"
           variant="filled"
           onChange={onChangeInput}
-          name="Password"
+          name="Pass"
           value={dataForm.Pass}
         />
 

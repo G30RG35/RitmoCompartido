@@ -18,12 +18,21 @@ export const Host = () => {
     });
   }, []);
 
-  const Buscar = ()=>{
-    console.log("Buscar")
-  }
+  const Buscar = () => {
+    socket.emit('Peticion', dataForm.Texto);
+  };
+
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
+  });
+
+  window.addEventListener("beforeunload", (event) => {
+    const datos={
+      rol:2,
+      id:Id,
+    }
+    socket.emit('UsuarioDesconectado',datos);
   });
 
   return (

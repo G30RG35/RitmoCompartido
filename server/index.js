@@ -10,47 +10,46 @@ const io = new SocketServer(server, {
   },
 });
 
-let hostConect=false
+let hostConect = false;
+
+const salas = [];
 
 io.on("connection", (socket) => {
-  // if (socket.handshake.query.role === "host") {
-  //   console.log("Host conectado");
-  // } else {
-  //   console.log("Invitado conectado");
-  // }
   socket.on("Peticion", (data) => {
     console.log(data);
   });
 
-  
-
-  const salas = [];
-
   socket.on("CrearParty", (data) => {
-    const id= data.Id
-    const nombre = data.Nombre
-    const pass = data.Pass
+    const id = data.Id;
+    const nombre = data.Nombre;
+    const pass = data.Pass;
 
-    // function generarArraySalas(salas) {
-    //   const arraySalas = [];
-    
-    //   for (const sala of salas) {
-    //     arraySalas.push({
-    //       SalaId: id,
-    //       Nombre: nombre,
-    //       Pass: pass,
-    //     });
-    //   }
-    //   return arraySalas;
-    // }
+    const objectAux = { id: id, nombre: nombre, pass: pass };
+    salas.push(objectAux);
 
-    console.log("Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre)
+    console.log(salas);
+    console.log(
+      "Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre
+    );
+  });
+
+  socket.on("UnirseParty", (data) => {
+    console.log("id = "+data.id+" pass = "+data.pass)
+    // const salaEncontrada=salas.find((sala)=>data.id==sala.id);
+    // console.log(salaEncontrada)
   });
 
   socket.on("UsuarioDesconectado", (data) => {
-    if (data == 2) {
+    if (data.rol == 2) {
       console.log(`El host se desconecto`);
-      hostConect=false
+      hostConect = false;
+
+      const objetoAEliminar = salas.find((sala) => sala.id == data.id);
+
+      const indiceObjetoAEliminar = salas.indexOf(objetoAEliminar);
+
+      salas.splice(indiceObjetoAEliminar, 1);
+      console.log(salas);
     } else {
       console.log(`El Usuario se desconecto`);
     }
