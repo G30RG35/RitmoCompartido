@@ -34,31 +34,43 @@ io.on("connection", (socket) => {
   });
 
   socket.on("UnirseParty", (data) => {
-    console.log("id = "+data.id+" pass = "+data.pass)
-    // const salaEncontrada=salas.find((sala)=>data.id==sala.id);
-    // console.log(salaEncontrada)
+    const salaEncontrada = salas.find((sala) => data.id == sala.id);
+    console.log(salaEncontrada);
+    socket.emit("sala", salaEncontrada);
   });
 
-   socket.on("BuscarParty", (data) => {
-    const id= data.Id
-    const pass = data.Pass
+  socket.on("BuscarParty", (data) => {
+    const id = data.Id;
+    const pass = data.Password;
 
-   const Sala=salas.find((sala) =>
-     sala.id==id
-             )
-     if(Sala!=undefined){
-       if(Sala.pass==pass){
-         socket.join(id);
-         console.log("Usuario conectado")
-       }else{
-         console.log("Pasword incorecta")
-       }
-    }else{
-       console.log("Sala no encontrada")
+    const Sala = salas.find((sala) => sala.id == id);
+
+    /**cambiar a objeto */
+    const estado={
+      validate:false,
+      message:""
     }
+
+    if (Sala != undefined) {
+      validarConexionASala(Sala,estado,pass,id)
+    } else {
+      estado.message="Sala no encontrada"
+      estado.validate=false
+    }
+    socket.emit('BuscarPartyRespuesta',estado)
   });
 
+ const validarConexionASala =(Sala,estado,pass,id)=>{
+  if (Sala.pass == pass) {
+    socket.join(id);
+    estado.message="Usuario conectado"
+    estado.validate=true
+  } else {
+    estado.message="Pasword incorecta"
+    estado.validate=false
+  }
   
+ }
 
   socket.on("UsuarioDesconectado", (data) => {
     if (data.rol == 2) {
@@ -71,8 +83,10 @@ io.on("connection", (socket) => {
 
       salas.splice(indiceObjetoAEliminar, 1);
       console.log(salas);
+      return;
     } else {
       console.log(`El Usuario se desconecto`);
+      return;
     }
   });
 });

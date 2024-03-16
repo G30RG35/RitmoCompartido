@@ -6,38 +6,59 @@ import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon
 import { socket } from "../../socket";
 
 export const Invitado = () => {
-
   let { Id: Id } = useParams();
   let { Pass: Pass } = useParams();
 
   useEffect(() => {
-    socket.emit('BuscarParty',{Id,Pass});
-}, []);
-  
+    socket.emit("BuscarParty", { Id, Pass });
+  }, []);
+
+  function Desconectar() {
+    const datos = {
+      rol: 1,
+      id: Id,
+    };
+    socket.emit("UsuarioDesconectado", datos);
+  }
+
+  // window.addEventListener("beforeunload", (event) => {
+  //   Desconectar;
+  // });
+
+  window.addEventListener("popstate", () => {
+    Desconectar;
+  });
+
   const [Nombre, setNombre] = useState("");
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
-    Texto: "",
+    Texto: "sin nombre",
   });
 
   const Buscar = () => {
-    socket.emit('Peticion', dataForm.Texto);
+    socket.emit("Peticion", dataForm.Texto);
   };
 
+  // const TraerDatos = () => {
+  //   setNombre("Eduardos");
+  // };
 
-  const TraerDatos = () => {
-    setNombre("Eduardos");
-  };
+  // useEffect(() => {
+  //   TraerDatos();
 
-  useEffect(() => {
-    TraerDatos();
-    
-    const datos={
-      id: Id,
-      pass:Pass,
-    }
-    socket.emit("UnirseParty",datos);
-  }, []);
+  //   const datos = {
+  //     id: Id,
+  //     pass: Pass,
+  //   };
+  //   socket.emit("UnirseParty", datos);
+  // }, []);
+
+  // socket.on("sala", (data) => {
+  //   console.log(
+  //     "Mensaje recibido:",
+  //     data.id + "," + data.nombre + "," + data.pass
+  //   );
+  // });
 
   return (
     <>

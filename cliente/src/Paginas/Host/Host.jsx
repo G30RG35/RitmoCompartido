@@ -18,6 +18,21 @@ export const Host = () => {
     });
   }, []);
 
+  function Desconectar() {
+    const datos={
+      rol:2,
+      id:Id,
+    }
+    socket.emit('UsuarioDesconectado',datos);
+  }
+  window.addEventListener("beforeunload", (event) => {
+    Desconectar()
+  });
+
+  window.addEventListener('popstate', () => {
+    Desconectar()
+  });
+
   const Buscar = () => {
     socket.emit('Peticion', dataForm.Texto);
   };
@@ -27,13 +42,7 @@ export const Host = () => {
     Texto: "",
   });
 
-  window.addEventListener("beforeunload", (event) => {
-    const datos={
-      rol:2,
-      id:Id,
-    }
-    socket.emit('UsuarioDesconectado',datos);
-  });
+
 
   return (
     <>
