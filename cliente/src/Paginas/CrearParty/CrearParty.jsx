@@ -1,17 +1,18 @@
 import { Button, Grid, TextField } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import io from "socket.io-client";
+import { Alerta } from "../../hooks/useAlert";
+import { socket } from "../../socket"; 
 
 export const CrearParty = () => {
-  const socket = io.connect("localhost:3000", {
-    query: {
-      role: "host",
-    },
-  });
-
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false)
+
+  const [open, setOpen] = useState(false);
+  const [mensaje, setmensaje] = useState("Sin mensaje");
+  const [severidad, setseveridad] = useState("info");
+
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Id: "",
@@ -19,9 +20,38 @@ export const CrearParty = () => {
     Pass: "",
   });
 
-  function Crear() {
-    navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
+  // function Crear() {
+  //   navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
+  // }
+
+  const Crear = () => {
+    console.log(dataForm)
+    if (dataForm.Id==""||dataForm.Nombre==""||dataForm.Pass=="") {
+      setmensaje("Llene todo los datos")
+      setseveridad("warning")
+      setOpen(true)
+      return
+    }
+    setLoading(true)
+    socket.emit('CrearParty',dataForm);
   }
+
+  socket.on("Sala Creada",()=>{
+    setmensaje("Sala Creada")
+    setseveridad("success")
+    setOpen(true)
+    setTimeout(() => {
+      navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
+    }, 2000);
+    
+  })
+
+  socket.on("Sala ya existe",()=>{
+    setmensaje("Sala ya existe")
+    setseveridad("warning")
+    setOpen(true)
+    setLoading(false)
+  })
 
   function Regresar() {
     navigate("/");
@@ -29,6 +59,7 @@ export const CrearParty = () => {
 
   return (
     <>
+    {Alerta(severidad, mensaje, open, setOpen, 5000)}
       <div className="divInicial">
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
@@ -65,7 +96,7 @@ export const CrearParty = () => {
             Regresar
           </Button>
 
-          <Button onClick={Crear} variant="contained">
+          <Button disabled={loading} onClick={Crear} variant="contained">
             Crear
           </Button>
         </div>

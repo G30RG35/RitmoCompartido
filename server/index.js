@@ -1,94 +1,73 @@
-import express from "express";
-import http from "http";
-import { Server as SocketServer } from "socket.io";
+const http = require("http");
+const server = http.createServer();
 
-const app = express();
-const server = http.createServer(app);
-const io = new SocketServer(server, {
-  cors: {
-    origin: "http://localhost:5173",
-  },
+const io = require("socket.io")(server, {
+  cors: { origin: "*" },
 });
 
-let hostConect = false;
+const Salas = [];
 
-const salas = [];
+let listItems = [];
+
+function handleAddListItem(text) {
+  const newListItems = [...listItems, text];
+  listItems = newListItems;
+}
 
 io.on("connection", (socket) => {
-  socket.on("Peticion", (data) => {
-    console.log(data);
+  console.log("Se a conectado un cliente");
+
+  socket.on("BuscarParty", (data) => {
+    let salaEncontrada = Salas.find((sala) => sala.id === data.Id);
+    let passwordValida = salaEncontrada && salaEncontrada.pass === data.Pass;
+  
+    if (salaEncontrada) {
+      if (passwordValida) {
+        socket.join(data.Id);
+        socket.emit("Uniendose");
+      } else {
+        socket.emit("ErrorPassword");
+      }
+    } else {
+      socket.emit("Sala no existe");
+    }
   });
 
   socket.on("CrearParty", (data) => {
-    const id = data.Id;
-    const nombre = data.Nombre;
-    const pass = data.Pass;
 
-    const objectAux = { id: id, nombre: nombre, pass: pass };
-    salas.push(objectAux);
-
-    console.log(salas);
-    console.log(
-      "Sala creada con Id: " + data.Id + ", Nombre de la sala: " + data.Nombre
-    );
-  });
-
-  socket.on("UnirseParty", (data) => {
-    const salaEncontrada = salas.find((sala) => data.id == sala.id);
-    console.log(salaEncontrada);
-    socket.emit("sala", salaEncontrada);
-  });
-
-  socket.on("BuscarParty", (data) => {
-    const id = data.Id;
-    const pass = data.Password;
-
-    const Sala = salas.find((sala) => sala.id == id);
-
-    /**cambiar a objeto */
-    const estado={
-      validate:false,
-      message:""
+    const indiceObjeto = Salas.findIndex((objeto) => objeto.id === data.id);
+    if (indiceObjeto) {
+      Salas.push({
+        id: data.Id,
+        name: data.Nombre,
+        pass: data.Pass,
+      });
+      socket.join(data.Id);
+      socket.emit("Sala Creada");
+    }else{
+      socket.emit("Sala ya existe");
     }
-
-    if (Sala != undefined) {
-      validarConexionASala(Sala,estado,pass,id)
-    } else {
-      estado.message="Sala no encontrada"
-      estado.validate=false
-    }
-    socket.emit('BuscarPartyRespuesta',estado)
+    console.log(Salas)
   });
 
- const validarConexionASala =(Sala,estado,pass,id)=>{
-  if (Sala.pass == pass) {
-    socket.join(id);
-    estado.message="Usuario conectado"
-    estado.validate=true
-  } else {
-    estado.message="Pasword incorecta"
-    estado.validate=false
-  }
+  socket.on("Eliminar sala",(data)=>{
+    const indiceObjeto = Salas.findIndex((objeto) => objeto.id === data.Id);
+    if (indiceObjeto) {
+      Salas.splice(indiceObjeto, 1);
+    }
+    socket.emit("Sala Borrada");
+  })
+
+  socket.on("Peticion",(data)=>{
+    handleAddListItem(data.Texto);
+    io.to(data.Id).emit("NewPeticion"+data.Id,listItems);
+    // socket.emit("NewPeticion"+data.Id,listItems);
+  })
+
+  socket.on("disconnect", () => {
+    console.log("Usuario desconectado")
+  });
   
- }
-
-  socket.on("UsuarioDesconectado", (data) => {
-    if (data.rol == 2) {
-      console.log(`El host se desconecto`);
-      hostConect = false;
-
-      const objetoAEliminar = salas.find((sala) => sala.id == data.id);
-
-      const indiceObjetoAEliminar = salas.indexOf(objetoAEliminar);
-
-      salas.splice(indiceObjetoAEliminar, 1);
-      console.log(salas);
-      return;
-    } else {
-      console.log(`El Usuario se desconecto`);
-      return;
-    }
-  });
 });
 
 server.listen(3000);

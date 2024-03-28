@@ -15,20 +15,37 @@ export const UnirseParty = () => {
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Id: "",
-    Password: "",
+    Pass: "",
   });
 
-  function joinParty() {
+  const joinParty = () => {
     setloading(true);
-    socket.emit("BuscarParty", dataForm);
-    socket.on("BuscarPartyRespuesta", (estado) => {
-      setmensaje(estado.message);
-      estado.validate?setseveridad("success"):setseveridad("warning")
-      setOpen(!open)
-    });
-    setloading(false);
-    // navigate("/party/invitado/" + dataForm.Id+"/"+dataForm.Password);
+    socket.emit("BuscarParty",dataForm);
+      
   }
+
+  socket.on("Uniendose",()=>{
+    setmensaje("Uniendose a la sala");
+    setseveridad("success")
+    setOpen(true)
+    setTimeout(() => {
+      navigate("/party/"+ dataForm.Id);
+    }, 2000);
+  })
+
+  socket.on("Sala no existe",()=>{
+    setmensaje("Sala no existe");
+    setseveridad("warning")
+    setOpen(true)
+    setloading(false);
+  })
+
+  socket.on("ErrorPassword",()=>{
+    setmensaje("Contraseña Erronea");
+    setseveridad("warning")
+    setOpen(true)
+    setloading(false);
+  })
 
   function Regresar() {
     navigate("/");
@@ -36,12 +53,7 @@ export const UnirseParty = () => {
 
   return (
     <>
-      <Alerta
-        severidad={severidad}
-        mensaje={mensaje}
-        open={open}
-        setOpen={setOpen}
-      />
+       {Alerta(severidad, mensaje, open, setOpen, 5000)}
       <div className="divInicial">
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
@@ -60,8 +72,8 @@ export const UnirseParty = () => {
           label="Contraseña"
           variant="filled"
           onChange={onChangeInput}
-          name="Password"
-          value={dataForm.Password}
+          name="Pass"
+          value={dataForm.Pass}
         />
         <div className="divButons">
           <Button onClick={Regresar} variant="contained">

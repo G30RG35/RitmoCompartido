@@ -26,7 +26,7 @@ export const PrivateRoutes = () => {
           element: <Host/> ,
         },
         {
-          path: "/party/invitado/:Id/:Pass",
+          path: "/party/:Id",
           element: <Invitado/> ,
         },
         {

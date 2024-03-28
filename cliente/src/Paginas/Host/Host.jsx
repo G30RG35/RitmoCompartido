@@ -1,54 +1,79 @@
-import { Button, TextField } from "@mui/material";
-import React, { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Button, IconButton, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
+import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
 import { socket } from "../../socket";
+import { Alerta } from "../../hooks/useAlert";
+import VideoCards from "../../hooks/YouTubeApi.jsx";
+import VideoPlayer from "../../Componentes/VideoPlayer.jsx";
+
 export const Host = () => {
-  
   let { Id: Id } = useParams();
   let { Nombre: Nombre } = useParams();
-  let { Pass: Pass } = useParams();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    socket.emit("CrearParty", {
-      Id: Id,
-      Nombre: Nombre,
-      Pass:Pass,
-    });
-  }, []);
+  const [open, setOpen] = useState(false);
+  const [mensaje, setmensaje] = useState("Sin mensaje");
+  const [severidad, setseveridad] = useState("info");
 
-  function Desconectar() {
-    const datos={
-      rol:2,
-      id:Id,
-    }
-    socket.emit('UsuarioDesconectado',datos);
-  }
-  window.addEventListener("beforeunload", (event) => {
-    Desconectar()
-  });
+  const [listItems, setListItems] = React.useState([]);
 
-  window.addEventListener('popstate', () => {
-    Desconectar()
-  });
-
-  const Buscar = () => {
-    socket.emit('Peticion', dataForm.Texto);
-  };
-
+  const Buscar = () => {};
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
   });
 
+  const Regresar = () => {
+    socket.emit("Eliminar sala", Id);
+  };
 
+  const lista = () => {
+    VideoListInicial();
+  };
+
+  socket.on("Sala Borrada", () => {
+    setmensaje("Saliendo de la sala");
+    setseveridad("warning");
+    setOpen(true);
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
+  });
+
+  socket.on("NewPeticion" + Id, (data) => {
+    setListItems(data);
+  });
 
   return (
     <>
+      {Alerta(severidad, mensaje, open, setOpen, 5000)}
       <div className="divInicial">
         <div className="divmini">
-          <p> Ritmo Compartido</p>
+          <div
+            style={{ width: "100%", top: 10, left: 10, position: "absolute" }}
+          >
+            <Button
+              aria-label="regresar"
+              style={{ margin: "5px" }}
+              onClick={Regresar}
+              variant="contained"
+            >
+              <ArrowLeftIcon />
+            </Button>
+            <Button
+              aria-label="regresar"
+              style={{ margin: "5px" }}
+              onClick={lista}
+              variant="contained"
+            >
+              Lista
+            </Button>
+          </div>
+
+          <span> Ritmo Compartido</span>
           <div className="red-box-mini"></div>
         </div>
         <p>
@@ -56,6 +81,12 @@ export const Host = () => {
           <br />
           Id de la Fiesta: {Id}
         </p>
+        <VideoCards />
+
+        <div>
+          <h2>Video Actual</h2>
+          
+        </div>
         <div style={{ display: "flex" }}>
           <TextField
             style={{ borderRadius: "1em" }}
@@ -78,7 +109,11 @@ export const Host = () => {
 
         <div>
           <p>Canciones pedidas</p>
-          <ol></ol>
+          <ul>
+            {listItems.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </>

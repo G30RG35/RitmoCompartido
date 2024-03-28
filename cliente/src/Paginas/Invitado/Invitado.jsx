@@ -9,6 +9,17 @@ export const Invitado = () => {
   let { Id: Id } = useParams();
   let { Pass: Pass } = useParams();
 
+  const [listItems, setListItems] = React.useState([]);
+
+  const handleAddListItem = (text) => {
+    const newListItems = [...listItems, text];
+    setListItems(newListItems);
+  };
+
+  socket.on("NewPeticion" + Id, (data) => {
+    setListItems(data)
+  });
+
   useEffect(() => {
     socket.emit("BuscarParty", { Id, Pass });
   }, []);
@@ -21,44 +32,24 @@ export const Invitado = () => {
     socket.emit("UsuarioDesconectado", datos);
   }
 
-  // window.addEventListener("beforeunload", (event) => {
-  //   Desconectar;
-  // });
 
-  window.addEventListener("popstate", () => {
-    Desconectar;
-  });
 
   const [Nombre, setNombre] = useState("");
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
-    Texto: "sin nombre",
+    Texto: "",
   });
 
   const Buscar = () => {
-    socket.emit("Peticion", dataForm.Texto);
+    socket.emit("Peticion", {
+      Texto: dataForm.Texto,
+      Id: Id,
+    });
+    setDataForm({
+      dataForm,
+      Texto: ""
+    })
   };
-
-  // const TraerDatos = () => {
-  //   setNombre("Eduardos");
-  // };
-
-  // useEffect(() => {
-  //   TraerDatos();
-
-  //   const datos = {
-  //     id: Id,
-  //     pass: Pass,
-  //   };
-  //   socket.emit("UnirseParty", datos);
-  // }, []);
-
-  // socket.on("sala", (data) => {
-  //   console.log(
-  //     "Mensaje recibido:",
-  //     data.id + "," + data.nombre + "," + data.pass
-  //   );
-  // });
 
   return (
     <>
@@ -90,6 +81,14 @@ export const Invitado = () => {
           >
             <MagnifyingGlassIcon />
           </Button>
+        </div>
+        <div>
+          <p>Canciones pedidas</p>
+          <ul>
+            {listItems.map((item,index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </>
