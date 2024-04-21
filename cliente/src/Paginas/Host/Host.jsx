@@ -6,8 +6,8 @@ import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon
 import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
 import { socket } from "../../socket";
 import { Alerta } from "../../hooks/useAlert";
-import VideoCards from "../../hooks/YouTubeApi.jsx";
-import VideoPlayer from "../../Componentes/VideoPlayer.jsx";
+import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
+import { busqueda } from "../../hooks/PeticionesApi.js";
 
 export const Host = () => {
   let { Id: Id } = useParams();
@@ -20,11 +20,26 @@ export const Host = () => {
 
   const [listItems, setListItems] = React.useState([]);
 
-  const Buscar = () => {};
-
+  const [videoList, setvideoList] = useState([])
+  const addVideoList = (video)=>{
+    setvideoList(
+      videoList,
+      setvideoList(video)
+    )
+    console.log(videoList)
+  }
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
   });
+
+  useEffect(() => {
+    dataForm.Texto != "" ? setFirstSearch(false) : null;
+  }, [dataForm]);
+
+  const Buscar = async () => {
+    const resp = await busqueda(dataForm.Texto);
+    console.log("repuesta en el host", resp);
+  };
 
   const Regresar = () => {
     socket.emit("Eliminar sala", Id);
@@ -47,6 +62,9 @@ export const Host = () => {
     setListItems(data);
   });
 
+  const notLoading = () => {
+    setloading(false);
+  };
   return (
     <>
       {Alerta(severidad, mensaje, open, setOpen, 5000)}
@@ -81,12 +99,14 @@ export const Host = () => {
           <br />
           Id de la Fiesta: {Id}
         </p>
-        <VideoCards />
 
+        <h3>Tendencias</h3>
+        <VideoCard addVideoList={addVideoList}/>
         <div>
           <h2>Video Actual</h2>
-          
         </div>
+
+        {/* Buscador */}
         <div style={{ display: "flex" }}>
           <TextField
             style={{ borderRadius: "1em" }}
@@ -97,6 +117,11 @@ export const Host = () => {
             onChange={onChangeInput}
             name="Texto"
             value={dataForm.Texto}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                Buscar();
+              }
+            }}
           />
           <Button
             style={{ margin: "5px" }}
@@ -107,6 +132,7 @@ export const Host = () => {
           </Button>
         </div>
 
+        {/* Canciones Pedidas */}
         <div>
           <p>Canciones pedidas</p>
           <ul>

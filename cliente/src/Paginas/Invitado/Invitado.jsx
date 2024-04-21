@@ -73,6 +73,11 @@ export const Invitado = () => {
             onChange={onChangeInput}
             name="Texto"
             value={dataForm.Texto}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                Buscar();
+              }
+            }}
           />
           <Button
             style={{ margin: "5px" }}
