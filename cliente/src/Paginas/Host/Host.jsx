@@ -8,7 +8,7 @@ import { socket } from "../../socket";
 import { Alerta } from "../../hooks/useAlert";
 import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
 import { busqueda } from "../../hooks/PeticionesApi.js";
-import { SearchCards } from "../../Componentes/SearchCards/SearchCards.jsx";
+import { Video } from "../../Componentes/Video/Video.jsx";
 
 export const Host = () => {
   let { Id: Id } = useParams();
@@ -119,6 +119,7 @@ export const Host = () => {
         )}
         <div>
           <h2>Video Actual</h2>
+          <Video videoList={videoList}/>
         </div>
 
         {/* Buscador */}

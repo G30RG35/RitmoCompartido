@@ -6,7 +6,6 @@ function VideoCard({dataSearch, addVideoList }) {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    console.log(dataSearch)
     if (dataSearch!=null) {
       setVideos(dataSearch);
     } else {
@@ -15,7 +14,6 @@ function VideoCard({dataSearch, addVideoList }) {
   }, []);
 
   useEffect(() => {
-    console.log(dataSearch)
     if (dataSearch!=null) {
       setVideos(dataSearch);
     } else {
@@ -26,7 +24,6 @@ function VideoCard({dataSearch, addVideoList }) {
 
   const traerMasPopulares = async () => {
     const resp = await masPopulares();
-    console.log(resp);
     setVideos(resp);
   };
 
