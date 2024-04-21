@@ -2,29 +2,40 @@ import React, { useState, useEffect } from "react";
 import styles from "./VideoCard.module.css";
 import { masPopulares } from "../../hooks/PeticionesApi";
 
-function VideoCard(addVideoList) {
+function VideoCard({dataSearch, addVideoList }) {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
-    traerMasPopulares();
+    console.log(dataSearch)
+    if (dataSearch!=null) {
+      setVideos(dataSearch);
+    } else {
+      traerMasPopulares();
+    }
   }, []);
+
+  useEffect(() => {
+    console.log(dataSearch)
+    if (dataSearch!=null) {
+      setVideos(dataSearch);
+    } else {
+      traerMasPopulares();
+    }
+  }, [dataSearch])
+  
 
   const traerMasPopulares = async () => {
     const resp = await masPopulares();
-    console.log(resp)
+    console.log(resp);
     setVideos(resp);
-
   };
-
 
   const renderVideoCards = () => {
     return videos.map((video) => (
       <div
         className={styles.video}
-        key={video.id}
-        onClick={() =>addVideoList(video.id)
-          (console.log(video.id))
-        }
+        key={video?.id?.videoId||video?.id}
+        onClick={() => addVideoList(video?.id,video?.id?.videoId)}
       >
         <img
           src={video.snippet.thumbnails.high.url}

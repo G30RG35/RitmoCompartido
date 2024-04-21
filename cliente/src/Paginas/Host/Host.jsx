@@ -8,6 +8,7 @@ import { socket } from "../../socket";
 import { Alerta } from "../../hooks/useAlert";
 import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
 import { busqueda } from "../../hooks/PeticionesApi.js";
+import { SearchCards } from "../../Componentes/SearchCards/SearchCards.jsx";
 
 export const Host = () => {
   let { Id: Id } = useParams();
@@ -20,33 +21,45 @@ export const Host = () => {
 
   const [listItems, setListItems] = React.useState([]);
 
-  const [videoList, setvideoList] = useState([])
-  const addVideoList = (video)=>{
-    setvideoList(
-      videoList,
-      setvideoList(video)
-    )
-    console.log(videoList)
-  }
+  const [videoList, setvideoList] = useState([]);
+  const [firstSearch, setfirstSearch] = useState(false);
+  const [dataSearch, setdataSearch] = useState(null);
+
+  const addVideoList = (id,videoid) => {
+    console.log(id)
+    console.log(videoid)
+    let nuevoid=""
+    if (videoid!=null) {
+      nuevoid=videoid
+    }else{
+      nuevoid=id
+    }
+
+    console.log("video agreado");
+    setvideoList((prevVideoList) => [...prevVideoList, nuevoid]);
+  };
+
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
   });
 
-  useEffect(() => {
-    dataForm.Texto != "" ? setFirstSearch(false) : null;
-  }, [dataForm]);
-
   const Buscar = async () => {
     const resp = await busqueda(dataForm.Texto);
+    setdataSearch(resp);
     console.log("repuesta en el host", resp);
+    setfirstSearch(true);
   };
+
+  useEffect(() => {
+    console.log(dataSearch);
+  }, [dataSearch]);
 
   const Regresar = () => {
     socket.emit("Eliminar sala", Id);
   };
 
   const lista = () => {
-    VideoListInicial();
+    console.log(videoList);
   };
 
   socket.on("Sala Borrada", () => {
@@ -62,9 +75,6 @@ export const Host = () => {
     setListItems(data);
   });
 
-  const notLoading = () => {
-    setloading(false);
-  };
   return (
     <>
       {Alerta(severidad, mensaje, open, setOpen, 5000)}
@@ -99,9 +109,14 @@ export const Host = () => {
           <br />
           Id de la Fiesta: {Id}
         </p>
-
-        <h3>Tendencias</h3>
-        <VideoCard addVideoList={addVideoList}/>
+        {firstSearch ? (
+          <VideoCard dataSearch={dataSearch} addVideoList={addVideoList} />
+        ) : (
+          <>
+            <h3>Tendencias</h3>
+            <VideoCard addVideoList={addVideoList} />
+          </>
+        )}
         <div>
           <h2>Video Actual</h2>
         </div>

@@ -4,29 +4,50 @@ const channelHttp = "https://www.googleapis.com/youtube/v3/channels?";
 const search = "https://www.googleapis.com/youtube/v3/search?";
 const maxResults = 5;
 
-export const busqueda = (params) => {
-  const searchParams = new URLSearchParams({
-    part: "snippet",
-    maxResults: maxResults+1,
-    q: params,
-    key: api_key,
-  });
-
-  const fetchUrl = search + searchParams.toString();
-
-  return fetch(fetchUrl)
-    .then((res) => res.json())
-    .then((data) => {
-      const filteredVideos = data.items.filter(
-        (video) => video.id.kind === "youtube#video"
-      );
-      return filteredVideos;
-    })
-    .catch((error) => {
+export const busqueda = async (params, includeThumbnails = true) => {
+    try {
+      const searchParams = new URLSearchParams({
+        part: "snippet",
+        maxResults: maxResults,
+        q: params,
+        type: "video", 
+        key: api_key,
+      });
+  
+      if (includeThumbnails) {
+        searchParams.append('part', 'id'); // Include id for channel lookup
+      }
+  
+      const fetchUrl = search + searchParams.toString();
+  
+      const response = await fetch(fetchUrl);
+      const data = await response.json();
+  
+      if (includeThumbnails) {
+        const enrichedVideos = await Promise.all(
+          data.items.map(async (video) => {
+            const channelId = video.snippet.channelId;
+            const channelThumbnail = await getChannelThumbnail(channelId);
+            return {
+              ...video,
+              channelThumbnail,
+            };
+          })
+        );
+        return enrichedVideos.filter((video) => video.id.kind === "youtube#video");
+      } else {
+        const filteredVideos = data.items.filter(
+          (video) => video.id.kind === "youtube#video"
+        );
+        return filteredVideos;
+      }
+    } catch (error) {
       console.error("Error fetching videos:", error);
       return Promise.reject(error); // Re-throw the error for proper handling
-    });
-};
+    }
+  };
+  
+  
 
 export const masPopulares = async () => {
     try {
