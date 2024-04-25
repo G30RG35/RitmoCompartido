@@ -71,8 +71,9 @@ export const Host = () => {
     }, 2000);
   });
 
-  socket.on("NewPeticion" + Id, (data) => {
-    setListItems(data);
+  socket.on("PeticionesActualizadas" + Id, (data) => {
+    const textArray = data.map((petition) => petition.Texto);
+    setListItems(textArray)
   });
 
   return (

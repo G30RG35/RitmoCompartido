@@ -11,13 +11,10 @@ export const Invitado = () => {
 
   const [listItems, setListItems] = React.useState([]);
 
-  const handleAddListItem = (text) => {
-    const newListItems = [...listItems, text];
-    setListItems(newListItems);
-  };
 
-  socket.on("NewPeticion" + Id, (data) => {
-    setListItems(data)
+  socket.on("PeticionesActualizadas" + Id, (data) => {
+    const textArray = data.map((petition) => petition.Texto);
+    setListItems(textArray)
   });
 
   useEffect(() => {
@@ -31,20 +28,19 @@ export const Invitado = () => {
     };
     socket.emit("UsuarioDesconectado", datos);
   }
-
-
-
   const [Nombre, setNombre] = useState("");
 
   const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
     Texto: "",
   });
 
+  let datos= {
+    Texto: dataForm.Texto,
+    Id: Id,
+  }
+  
   const Buscar = () => {
-    socket.emit("Peticion", {
-      Texto: dataForm.Texto,
-      Id: Id,
-    });
+    socket.emit("Peticion",datos);
     setDataForm({
       dataForm,
       Texto: ""
