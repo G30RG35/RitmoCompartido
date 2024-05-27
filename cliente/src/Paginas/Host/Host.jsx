@@ -1,4 +1,4 @@
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
@@ -11,70 +11,61 @@ import { busqueda } from "../../hooks/PeticionesApi.js";
 import { Video } from "../../Componentes/Video/Video.jsx";
 
 export const Host = () => {
-  let { Id: Id } = useParams();
-  let { Nombre: Nombre } = useParams();
+  const { Id, Nombre } = useParams();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
-  const [mensaje, setmensaje] = useState("Sin mensaje");
-  const [severidad, setseveridad] = useState("info");
+  const [mensaje, setMensaje] = useState("Sin mensaje");
+  const [severidad, setSeveridad] = useState("info");
 
-  const [listItems, setListItems] = React.useState([]);
+  const [listItems, setListItems] = useState([]);
+  const [videoList, setVideoList] = useState([]);
+  const [firstSearch, setFirstSearch] = useState(false);
+  const [dataSearch, setDataSearch] = useState(null);
 
-  const [videoList, setvideoList] = useState([]);
-  const [firstSearch, setfirstSearch] = useState(false);
-  const [dataSearch, setdataSearch] = useState(null);
-
-  const addVideoList = (id,videoid) => {
-    console.log(id)
-    console.log(videoid)
-    let nuevoid=""
-    if (videoid!=null) {
-      nuevoid=videoid
-    }else{
-      nuevoid=id
-    }
-
-    console.log("video agreado");
-    setvideoList((prevVideoList) => [...prevVideoList, nuevoid]);
+  const addVideoList = (id, videoid) => {
+    const nuevoid = videoid || id;
+    setVideoList((prevVideoList) => [...prevVideoList, nuevoid]);
   };
 
-  const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
+  const { onChangeInput, dataForm, setDataForm } = useForm({
     Texto: "",
   });
 
   const Buscar = async () => {
     const resp = await busqueda(dataForm.Texto);
-    setdataSearch(resp);
-    console.log("repuesta en el host", resp);
-    setfirstSearch(true);
+    setDataSearch(resp);
+    setFirstSearch(true);
   };
 
   useEffect(() => {
-    console.log(dataSearch);
-  }, [dataSearch]);
+    socket.on(`PeticionesActualizadas`, (data) => {
+      const textArray = data.map((petition) => petition.Texto);
+      setListItems(textArray);
+    });
+
+    socket.on("SalaBorrada", () => {
+      setMensaje("Saliendo de la sala");
+      setSeveridad("warning");
+      setOpen(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    });
+
+    return () => {
+      socket.off("PeticionesActualizadas");
+      socket.off("SalaBorrada");
+    };
+  }, [Id, navigate]);
 
   const Regresar = () => {
-    socket.emit("Eliminar sala", Id);
+    socket.emit("EliminarSala", { Id });
   };
 
   const lista = () => {
     console.log(videoList);
   };
-
-  socket.on("Sala Borrada", () => {
-    setmensaje("Saliendo de la sala");
-    setseveridad("warning");
-    setOpen(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
-  });
-
-  socket.on("PeticionesActualizadas" + Id, (data) => {
-    const textArray = data.map((petition) => petition.Texto);
-    setListItems(textArray)
-  });
 
   return (
     <>
@@ -101,7 +92,6 @@ export const Host = () => {
               Lista
             </Button>
           </div>
-
           <span> Ritmo Compartido</span>
           <div className="red-box-mini"></div>
         </div>
@@ -122,8 +112,6 @@ export const Host = () => {
           <h2>Video Actual</h2>
           <Video videoList={videoList}/>
         </div>
-
-        {/* Buscador */}
         <div style={{ display: "flex" }}>
           <TextField
             style={{ borderRadius: "1em" }}
@@ -148,8 +136,6 @@ export const Host = () => {
             <MagnifyingGlassIcon />
           </Button>
         </div>
-
-        {/* Canciones Pedidas */}
         <div>
           <p>Canciones pedidas</p>
           <ul>

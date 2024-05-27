@@ -1,59 +1,67 @@
 import { Button, TextField } from "@mui/material";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { socket } from "../../socket";
 import { Alerta } from "../../hooks/useAlert";
 
 export const UnirseParty = () => {
   const navigate = useNavigate();
-  const [loading, setloading] = useState(false);
-  const [severidad, setseveridad] = useState("info");
-  const [mensaje, setmensaje] = useState("Sin mensaje");
+  const [loading, setLoading] = useState(false);
+  const [severidad, setSeveridad] = useState("info");
+  const [mensaje, setMensaje] = useState("Sin mensaje");
   const [open, setOpen] = useState(false);
 
-  const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
+  const { onChangeInput, dataForm } = useForm({
     Id: "",
     Pass: "",
   });
 
   const joinParty = () => {
-    setloading(true);
-    socket.emit("BuscarParty",dataForm);
-      
-  }
+    setLoading(true);
+    socket.emit("BuscarParty", dataForm);
+  };
 
-  socket.on("Uniendose",()=>{
-    setmensaje("Uniendose a la sala");
-    setseveridad("success")
-    setOpen(true)
-    setTimeout(() => {
-      navigate("/party/"+ dataForm.Id);
-    }, 2000);
-  })
+  useEffect(() => {
+    socket.on("Uniendose", () => {
+      setMensaje("Uniéndose a la sala");
+      setSeveridad("success");
+      setOpen(true);
+      setLoading(false);
+      setTimeout(() => {
+        navigate("/party/" + dataForm.Id);
+      }, 2000);
+    });
 
-  socket.on("Sala no existe",()=>{
-    setmensaje("Sala no existe");
-    setseveridad("warning")
-    setOpen(true)
-    setloading(false);
-  })
+    socket.on("SalaNoExiste", () => {
+      setMensaje("Sala no existe");
+      setSeveridad("warning");
+      setOpen(true);
+      setLoading(false);
+    });
 
-  socket.on("ErrorPassword",()=>{
-    setmensaje("Contraseña Erronea");
-    setseveridad("warning")
-    setOpen(true)
-    setloading(false);
-  })
+    socket.on("ErrorPassword", () => {
+      setMensaje("Contraseña errónea");
+      setSeveridad("warning");
+      setOpen(true);
+      setLoading(false);
+    });
 
-  function Regresar() {
+    // Cleanup to avoid multiple subscriptions
+    return () => {
+      socket.off("Uniendose");
+      socket.off("SalaNoExiste");
+      socket.off("ErrorPassword");
+    };
+  }, [dataForm, navigate]);
+
+  const Regresar = () => {
     navigate("/");
-  }
+  };
 
   return (
     <>
-       {Alerta(severidad, mensaje, open, setOpen, 5000)}
+      {Alerta(severidad, mensaje, open, setOpen, 5000)}
       <div className="divInicial">
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
@@ -79,7 +87,6 @@ export const UnirseParty = () => {
           <Button onClick={Regresar} variant="contained">
             Regresar
           </Button>
-
           <Button onClick={joinParty} variant="contained" disabled={loading}>
             Unirse
           </Button>

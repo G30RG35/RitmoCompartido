@@ -1,5 +1,5 @@
 import { Button, Grid, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { Alerta } from "../../hooks/useAlert";
@@ -7,59 +7,61 @@ import { socket } from "../../socket";
 
 export const CrearParty = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false)
-
+  const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [mensaje, setmensaje] = useState("Sin mensaje");
-  const [severidad, setseveridad] = useState("info");
+  const [mensaje, setMensaje] = useState("Sin mensaje");
+  const [severidad, setSeveridad] = useState("info");
 
-
-  const { onChangeInput, onSubmit, dataForm, setDataForm } = useForm({
+  const { onChangeInput, dataForm } = useForm({
     Id: "",
     Nombre: "",
     Pass: "",
   });
 
-  // function Crear() {
-  //   navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
-  // }
-
   const Crear = () => {
-    console.log(dataForm)
-    if (dataForm.Id==""||dataForm.Nombre==""||dataForm.Pass=="") {
-      setmensaje("Llene todo los datos")
-      setseveridad("warning")
-      setOpen(true)
-      return
+    console.log(dataForm);
+    if (dataForm.Id === "" || dataForm.Nombre === "" || dataForm.Pass === "") {
+      setMensaje("Llene todo los datos");
+      setSeveridad("warning");
+      setOpen(true);
+      return;
     }
-    setLoading(true)
-    socket.emit('CrearParty',dataForm);
-  }
+    setLoading(true);
+    socket.emit('CrearParty', dataForm);
+  };
 
-  socket.on("Sala Creada",()=>{
-    setmensaje("Sala Creada")
-    setseveridad("success")
-    setOpen(true)
-    setTimeout(() => {
-      navigate("/party/" + dataForm.Id + "/" + dataForm.Nombre+"/"+dataForm.Pass);
-    }, 2000);
-    
-  })
+  useEffect(() => {
+    socket.on('SalaCreada', () => {
+      setMensaje('Sala creada');
+      setSeveridad('success');
+      setOpen(true);
+      setLoading(false);
+      setTimeout(() => {
+        navigate(`/party/${dataForm.Id}/${dataForm.Nombre}/${dataForm.Pass}`);
+      }, 2000);
+    });
 
-  socket.on("Sala ya existe",()=>{
-    setmensaje("Sala ya existe")
-    setseveridad("warning")
-    setOpen(true)
-    setLoading(false)
-  })
+    socket.on("SalaYaExiste", () => {
+      setMensaje("Sala ya existe");
+      setSeveridad("warning");
+      setOpen(true);
+      setLoading(false);
+    });
 
-  function Regresar() {
+    // Cleanup to avoid multiple subscriptions
+    return () => {
+      socket.off('SalaCreada');
+      socket.off('SalaYaExiste');
+    };
+  }, [dataForm, navigate]);
+
+  const Regresar = () => {
     navigate("/");
-  }
+  };
 
   return (
     <>
-    {Alerta(severidad, mensaje, open, setOpen, 5000)}
+      {Alerta(severidad, mensaje, open, setOpen, 5000)}
       <div className="divInicial">
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
@@ -95,7 +97,6 @@ export const CrearParty = () => {
           <Button onClick={Regresar} variant="contained">
             Regresar
           </Button>
-
           <Button disabled={loading} onClick={Crear} variant="contained">
             Crear
           </Button>
