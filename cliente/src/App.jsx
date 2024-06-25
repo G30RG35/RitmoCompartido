@@ -1,30 +1,37 @@
 import React, { Suspense, useEffect, useState } from "react";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, ThemeProvider, createTheme } from "@mui/material";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { PrivateRoutes } from "./router/PrivateRoutes";
 import { PublicRoutes } from "./router/PublicRoutes";
-// import io from "socket.io-client"
-
-// const socket = io("http://localhost:3000")
 
 export const App = () => {
   const [router, setRouter] = useState(null);
 
   useEffect(() => {
-    setRouter(createBrowserRouter([
-      ...(true ? PrivateRoutes() : PublicRoutes()),
-   ]));
-  }, [])
+    setRouter(
+      createBrowserRouter([...(true ? PrivateRoutes() : PublicRoutes())])
+    );
+  }, []);
 
-
+  const theme = createTheme({
+    palette: {
+      black: {
+        main: "#000000",
+        light: "#333333",
+        contrastText: "#FFFFFF",
+      },
+    },
+  });
 
   return (
     <>
-      {
-        router === null
-        ? <Suspense fallback={<CircularProgress />}></Suspense>
-        : <RouterProvider router={router}  />
-      }
+      <ThemeProvider theme={theme}>
+        {router === null ? (
+          <Suspense fallback={<CircularProgress />}></Suspense>
+        ) : (
+          <RouterProvider router={router} />
+        )}
+      </ThemeProvider>
     </>
   );
 };

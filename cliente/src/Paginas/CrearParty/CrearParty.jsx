@@ -3,7 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import { Alerta } from "../../hooks/useAlert";
-import { socket } from "../../socket"; 
+import { socket } from "../../socket";
+
+import "../../index.css";
 
 export const CrearParty = () => {
   const navigate = useNavigate();
@@ -19,7 +21,6 @@ export const CrearParty = () => {
   });
 
   const Crear = () => {
-    console.log(dataForm);
     if (dataForm.Id === "" || dataForm.Nombre === "" || dataForm.Pass === "") {
       setMensaje("Llene todo los datos");
       setSeveridad("warning");
@@ -27,13 +28,13 @@ export const CrearParty = () => {
       return;
     }
     setLoading(true);
-    socket.emit('CrearParty', dataForm);
+    socket.emit("CrearParty", dataForm);
   };
 
   useEffect(() => {
-    socket.on('SalaCreada', () => {
-      setMensaje('Sala creada');
-      setSeveridad('success');
+    socket.on("SalaCreada", () => {
+      setMensaje("Sala creada");
+      setSeveridad("success");
       setOpen(true);
       setLoading(false);
       setTimeout(() => {
@@ -50,8 +51,8 @@ export const CrearParty = () => {
 
     // Cleanup to avoid multiple subscriptions
     return () => {
-      socket.off('SalaCreada');
-      socket.off('SalaYaExiste');
+      socket.off("SalaCreada");
+      socket.off("SalaYaExiste");
     };
   }, [dataForm, navigate]);
 
@@ -66,38 +67,46 @@ export const CrearParty = () => {
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
         <TextField
-          className="Inputs"
-          id="Id-input"
-          label="Id de Fiesta"
-          variant="filled"
           onChange={onChangeInput}
           name="Id"
           value={dataForm.Id}
+          label="Id de Fiesta"
+          variant="outlined"
+          className="Inputs"
+          color="black"
         />
         <TextField
           className="Inputs"
-          id="Fiesta-input"
+          id="outlined-basic"
+          variant="outlined"
           label="Nombre de la Fiesta"
-          variant="filled"
           onChange={onChangeInput}
           name="Nombre"
           value={dataForm.Nombre}
+          color="black"
         />
+
         <TextField
           className="Inputs"
           id="Contraseña-input"
           label="Contraseña"
-          variant="filled"
+          variant="outlined"
           onChange={onChangeInput}
           name="Pass"
           value={dataForm.Pass}
+          color="black"
         />
 
         <div className="divButons">
-          <Button onClick={Regresar} variant="contained">
+          <Button onClick={Regresar} variant="contained" color="black">
             Regresar
           </Button>
-          <Button disabled={loading} onClick={Crear} variant="contained">
+          <Button
+            disabled={loading}
+            onClick={Crear}
+            variant="contained"
+            color="black"
+          >
             Crear
           </Button>
         </div>
