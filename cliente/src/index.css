@@ -1,16 +1,14 @@
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
   background-color:#F0F8FF; 
 }
 
-#root{
-  min-height: 100%;
-  width: 80%;
-  margin: 0 auto;
+.header{
+  background-color: #000B0D;
+  color: whitesmoke;
+  height: 10vh;
+  display: flex;
+  align-items: center;
 }
 
 .red-box {
@@ -35,7 +33,6 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  color: whitesmoke;
 }
 
 .Inputs{
@@ -50,6 +47,11 @@ body {
 .buttonsBlack{
   background-color: black;
   color: white;
+}
+
+.gridCenter{
+  display: grid;
+  align-items: center;
 }
 
 /* Color Theme Swatches in Hex */

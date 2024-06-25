@@ -69,25 +69,32 @@ export const UnirseParty = () => {
           className="Inputs"
           id="Id-input"
           label="Id de Fiesta"
-          variant="filled"
+          variant="outlined"
           onChange={onChangeInput}
           name="Id"
           value={dataForm.Id}
+          color="black"
         />
         <TextField
           className="Inputs"
           id="Contraseña-input"
           label="Contraseña"
-          variant="filled"
+          variant="outlined"
           onChange={onChangeInput}
           name="Pass"
           value={dataForm.Pass}
+          color="black"
         />
         <div className="divButons">
-          <Button onClick={Regresar} variant="contained">
+          <Button onClick={Regresar} variant="contained" color="black">
             Regresar
           </Button>
-          <Button onClick={joinParty} variant="contained" disabled={loading}>
+          <Button
+            onClick={joinParty}
+            variant="contained"
+            disabled={loading}
+            color="black"
+          >
             Unirse
           </Button>
         </div>

@@ -18,10 +18,10 @@ export const Inicio = () => {
       <div className="divInicial">
         <p> Ritmo Compartido</p>
         <div className="red-box"></div>
-        <Button onClick={Crear} variant="contained">
+        <Button onClick={Crear} variant="contained" color="black">
           Crear Party
         </Button>
-        <Button onClick={Unirse} variant="contained">
+        <Button onClick={Unirse} variant="contained" color="black">
           Unirse a Party
         </Button>
       </div>

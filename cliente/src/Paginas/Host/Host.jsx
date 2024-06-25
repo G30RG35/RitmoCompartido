@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button, Grid, IconButton, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
@@ -9,7 +9,7 @@ import { Alerta } from "../../hooks/useAlert";
 import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
 import { busqueda } from "../../hooks/PeticionesApi.js";
 import { Video } from "../../Componentes/Video/Video.jsx";
-
+import "../../index.css";
 export const Host = () => {
   const { Id, Nombre } = useParams();
   const navigate = useNavigate();
@@ -23,6 +23,8 @@ export const Host = () => {
   const [firstSearch, setFirstSearch] = useState(false);
   const [dataSearch, setDataSearch] = useState(null);
 
+  const [isTendencia, setIsTendencia] = useState(true);
+
   const addVideoList = (id, videoid) => {
     const nuevoid = videoid || id;
     setVideoList((prevVideoList) => [...prevVideoList, nuevoid]);
@@ -33,6 +35,9 @@ export const Host = () => {
   });
 
   const Buscar = async () => {
+    if (isTendencia) {
+      setIsTendencia(false);
+    }
     const resp = await busqueda(dataForm.Texto);
     setDataSearch(resp);
     setFirstSearch(true);
@@ -63,37 +68,71 @@ export const Host = () => {
     socket.emit("EliminarSala", { Id });
   };
 
-  const lista = () => {
-    console.log(videoList);
+  const [showInput, setShowInput] = useState(false);
+
+  const handleButtonClick = () => {
+    setShowInput(!showInput);
   };
 
   return (
     <>
       {Alerta(severidad, mensaje, open, setOpen, 5000)}
+      <div className="header">
+        <Grid container spacing={1}>
+          <Grid item xs={3} className="gridCenter">
+            <ArrowLeftIcon
+              onClick={Regresar}
+              style={{ height: "50%", margin: "0 auto" }}
+            />
+          </Grid>
+
+          <Grid item xs={6} className="gridCenter">
+            <span style={{ margin: "0 auto" }}>{Nombre}</span>
+          </Grid>
+
+          <Grid item xs={3} className="gridCenter">
+            <div className="red-box-mini " style={{ margin: "0 auto" }}></div>
+          </Grid>
+        </Grid>
+      </div>
       <div className="divInicial">
+        <div>
+          <span style={{ fontWeight: "bold", fontSize: "1.5em" }}>
+            {isTendencia ? "Tendencia" : "Busqueda"}
+          </span>
+
+          <IconButton onClick={handleButtonClick}>
+            <MagnifyingGlassIcon style={{ width: "40px", height: "40px" }} />
+          </IconButton>
+          {showInput && (
+            <TextField
+              variant="outlined"
+              placeholder="Buscar..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <MagnifyingGlassIcon />
+                  </InputAdornment>
+                ),
+              }}
+              style={{ marginLeft: "10px" }}
+            />
+          )}
+        </div>
         <div className="divmini">
           <div
             style={{ width: "100%", top: 10, left: 10, position: "absolute" }}
           >
-            <Button
+            {/* <Button
               aria-label="regresar"
               style={{ margin: "5px" }}
               onClick={Regresar}
               variant="contained"
             >
               <ArrowLeftIcon />
-            </Button>
-            <Button
-              aria-label="regresar"
-              style={{ margin: "5px" }}
-              onClick={lista}
-              variant="contained"
-            >
-              Lista
-            </Button>
+            </Button> */}
           </div>
           <span> Ritmo Compartido</span>
-          <div className="red-box-mini"></div>
         </div>
         <p>
           Nombre de la Fiesta: {Nombre}
@@ -110,7 +149,7 @@ export const Host = () => {
         )}
         <div>
           <h2>Video Actual</h2>
-          <Video videoList={videoList}/>
+          <Video videoList={videoList} />
         </div>
         <div style={{ display: "flex" }}>
           <TextField
