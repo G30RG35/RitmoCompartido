@@ -1,14 +1,15 @@
 body {
   margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
   background-color:#F0F8FF; 
 }
 
-.header{
-  background-color: #000B0D;
-  color: whitesmoke;
-  height: 10vh;
-  display: flex;
-  align-items: center;
+#root{
+  min-height: 100%;
+  margin: 0 auto;
 }
 
 .red-box {
@@ -44,16 +45,19 @@ body {
   margin: 10px;
 }
 
+.header{
+  background-color: #000B0D;
+  color: whitesmoke;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+}
+
+
 .buttonsBlack{
   background-color: black;
   color: white;
 }
-
-.gridCenter{
-  display: grid;
-  align-items: center;
-}
-
 /* Color Theme Swatches in Hex */
 .Squid-1-hex { color: #1C8394; }
 .Squid-2-hex { color: #154B52; }
