@@ -1,0 +1,16 @@
+.container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    clip-path: circle(50% at 50% 50%);
+    /* Puedes cambiar la forma del polígono a tu gusto */
+}

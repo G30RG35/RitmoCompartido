@@ -10,6 +10,8 @@ import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
 import { busqueda } from "../../hooks/PeticionesApi.js";
 import { Video } from "../../Componentes/Video/Video.jsx";
 import "../../index.css";
+import { Header } from "../../Componentes/Header/Header.jsx";
+
 export const Host = () => {
   const { Id, Nombre } = useParams();
   const navigate = useNavigate();
@@ -64,9 +66,7 @@ export const Host = () => {
     };
   }, [Id, navigate]);
 
-  const Regresar = () => {
-    socket.emit("EliminarSala", { Id });
-  };
+
 
   const [showInput, setShowInput] = useState(false);
 
@@ -77,24 +77,8 @@ export const Host = () => {
   return (
     <>
       {Alerta(severidad, mensaje, open, setOpen, 5000)}
-      <div className="header">
-        <Grid container spacing={1}>
-          <Grid item xs={3} className="gridCenter">
-            <ArrowLeftIcon
-              onClick={Regresar}
-              style={{ height: "50%", margin: "0 auto" }}
-            />
-          </Grid>
-
-          <Grid item xs={6} className="gridCenter">
-            <span style={{ margin: "0 auto" }}>{Nombre}</span>
-          </Grid>
-
-          <Grid item xs={3} className="gridCenter">
-            <div className="red-box-mini " style={{ margin: "0 auto" }}></div>
-          </Grid>
-        </Grid>
-      </div>
+      <Header Id={Id} Nombre={Nombre}/>
+      {/*
       <div className="divInicial">
         <div>
           <span style={{ fontWeight: "bold", fontSize: "1.5em" }}>
@@ -123,14 +107,14 @@ export const Host = () => {
           <div
             style={{ width: "100%", top: 10, left: 10, position: "absolute" }}
           >
-            {/* <Button
+             <Button
               aria-label="regresar"
               style={{ margin: "5px" }}
               onClick={Regresar}
               variant="contained"
             >
               <ArrowLeftIcon />
-            </Button> */}
+            </Button>
           </div>
           <span> Ritmo Compartido</span>
         </div>
@@ -183,7 +167,7 @@ export const Host = () => {
             ))}
           </ul>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

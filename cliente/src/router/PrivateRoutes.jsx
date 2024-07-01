@@ -4,6 +4,7 @@ import { Error404 } from "../Paginas/Error404/Error404";
 import { Host } from "../Paginas/Host/Host";
 import { Inicio } from "../Paginas/Inicio/Inicio";
 import { Invitado } from "../Paginas/Invitado/Invitado";
+import { Prueba } from "../Paginas/Prueba/Prueba";
 import { UnirseParty } from "../Paginas/UnirseParty/UnirseParty";
 
 
@@ -32,6 +33,10 @@ export const PrivateRoutes = () => {
         {
           path: "/unirse-party",
           element: <UnirseParty/> ,
+        },
+        {
+          path: "/prueba",
+          element: <Prueba/> ,
         },
         {
           path: "*",

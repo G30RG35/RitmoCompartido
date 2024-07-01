@@ -2,6 +2,7 @@ import { Navigate } from "react-router-dom";
 
 import { Inicio } from "../Paginas/Inicio/Inicio";
 import { UnirseParty } from "../Paginas/UnirseParty/UnirseParty";
+import { Prueba } from "../Paginas/Prueba/Prueba";
 
 export const PublicRoutes = () => {
 
@@ -17,7 +18,10 @@ export const PublicRoutes = () => {
           path: "/unirse-party",
           element: <UnirseParty/> ,
         },
-
+        {
+          path: "/prueba",
+          element: <Prueba/> ,
+        },
         {
           path: "*",
           element: <Inicio />,

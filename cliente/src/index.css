@@ -1,7 +1,5 @@
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
   background-color:#F0F8FF; 
@@ -10,6 +8,7 @@ body {
 #root{
   min-height: 100%;
   margin: 0 auto;
+  width: 100%;
 }
 
 .red-box {
@@ -53,28 +52,23 @@ body {
   align-items: center;
 }
 
+.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 .buttonsBlack{
   background-color: black;
   color: white;
 }
-/* Color Theme Swatches in Hex */
-.Squid-1-hex { color: #1C8394; }
-.Squid-2-hex { color: #154B52; }
-.Squid-3-hex { color: #000B0D; }
-.Squid-4-hex { color: #390D02; }
-.Squid-5-hex { color: #A52502; }
 
-/* Color Theme Swatches in RGBA */
-.Squid-1-rgba { color: rgba(28, 131, 147, 1); }
-.Squid-2-rgba { color: rgba(21, 74, 81, 1); }
-.Squid-3-rgba { color: rgba(0, 11, 13, 1); }
-.Squid-4-rgba { color: rgba(56, 13, 2, 1); }
-.Squid-5-rgba { color: rgba(165, 36, 2, 1); }
+.logo_Header{
+  height: 2em;
+}
 
-/* Color Theme Swatches in HSLA */
-.Squid-1-hsla { color: hsla(188, 67, 34, 1); }
-.Squid-2-hsla { color: hsla(186, 58, 20, 1); }
-.Squid-3-hsla { color: hsla(188, 100, 2, 1); }
-.Squid-4-hsla { color: hsla(12, 93, 11, 1); }
-.Squid-5-hsla { color: hsla(12, 97, 32, 1); }
+.div_logo_header{
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+}
