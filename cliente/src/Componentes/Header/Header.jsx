@@ -14,7 +14,7 @@ export const Header = ({ Id, Nombre }) => {
       <Grid container>
         {/* Atras */}
         <Grid item xs={3} className="center">
-          <ArrowLeftIcon onClick={Regresar} style={{ height: "50%" }} />
+          <ArrowLeftIcon onClick={Regresar} style={{ height: "2rem" }} />
         </Grid>
         {/* Titulo */}
         <Grid item xs={6} className="center">

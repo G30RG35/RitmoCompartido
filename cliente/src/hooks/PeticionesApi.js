@@ -2,7 +2,7 @@ export const api_key = "AIzaSyArPcYH0y3x4aKJP56BbiMYi4vHhUaeg18";
 const videoHttp = "https://www.googleapis.com/youtube/v3/videos?";
 const channelHttp = "https://www.googleapis.com/youtube/v3/channels?";
 const search = "https://www.googleapis.com/youtube/v3/search?";
-const maxResults = 5;
+const maxResults = 1;
 
 export const busqueda = async (params, includeThumbnails = true) => {
     try {

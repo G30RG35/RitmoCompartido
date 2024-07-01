@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { api_key } from "../../hooks/PeticionesApi";
+import "../../index.css";
 
 export const Video = (videolist) => {
   const [number, setNumber] = useState(0);

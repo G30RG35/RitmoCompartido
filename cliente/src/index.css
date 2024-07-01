@@ -44,6 +44,21 @@ body {
   margin: 10px;
 }
 
+/** Nuevos estilos*/
+
+.reactplayer{
+  width: 100%;
+  height: 100%;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+.div_body{
+  width: 100%;
+  height: 100%;
+  margin: 1em;
+}
+
 .header{
   background-color: #000B0D;
   color: whitesmoke;

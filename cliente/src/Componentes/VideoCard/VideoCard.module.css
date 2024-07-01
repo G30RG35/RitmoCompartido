@@ -216,10 +216,10 @@ body{
 }
 
 .video{
-    margin: 20px;
+    margin: 0 auto;
     min-height: 100px;
     height: auto;
-    max-width: 250px;
+    max-width: 80%;
 }
 
 .thumbnail{

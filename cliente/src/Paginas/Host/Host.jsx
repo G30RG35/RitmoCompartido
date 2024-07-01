@@ -1,4 +1,10 @@
-import { Button, Grid, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  Grid,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "../../hooks/useForm";
@@ -7,7 +13,7 @@ import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
 import { socket } from "../../socket";
 import { Alerta } from "../../hooks/useAlert";
 import VideoCard from "../../Componentes/VideoCard/VideoCard.jsx";
-import { busqueda } from "../../hooks/PeticionesApi.js";
+import { busqueda, masPopulares } from "../../hooks/PeticionesApi.js";
 import { Video } from "../../Componentes/Video/Video.jsx";
 import "../../index.css";
 import { Header } from "../../Componentes/Header/Header.jsx";
@@ -27,6 +33,13 @@ export const Host = () => {
 
   const [isTendencia, setIsTendencia] = useState(true);
 
+  // useEffect(() => {
+  //   console.log("listItems", listItems);
+  //   console.log("videoList", videoList);
+  //   console.log("firstSearch", firstSearch);
+  //   console.log("dataSearch", dataSearch);
+  // }, [listItems,videoList,dataSearch,firstSearch])
+
   const addVideoList = (id, videoid) => {
     const nuevoid = videoid || id;
     setVideoList((prevVideoList) => [...prevVideoList, nuevoid]);
@@ -45,28 +58,26 @@ export const Host = () => {
     setFirstSearch(true);
   };
 
-  useEffect(() => {
-    socket.on(`PeticionesActualizadas`, (data) => {
-      const textArray = data.map((petition) => petition.Texto);
-      setListItems(textArray);
-    });
+  // useEffect(() => {
+  //   socket.on(`PeticionesActualizadas`, (data) => {
+  //     const textArray = data.map((petition) => petition.Texto);
+  //     setListItems(textArray);
+  //   });
 
-    socket.on("SalaBorrada", () => {
-      setMensaje("Saliendo de la sala");
-      setSeveridad("warning");
-      setOpen(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    });
+  //   socket.on("SalaBorrada", () => {
+  //     setMensaje("Saliendo de la sala");
+  //     setSeveridad("warning");
+  //     setOpen(true);
+  //     setTimeout(() => {
+  //       navigate("/");
+  //     }, 2000);
+  //   });
 
-    return () => {
-      socket.off("PeticionesActualizadas");
-      socket.off("SalaBorrada");
-    };
-  }, [Id, navigate]);
-
-
+  //   return () => {
+  //     socket.off("PeticionesActualizadas");
+  //     socket.off("SalaBorrada");
+  //   };
+  // }, [Id, navigate]);
 
   const [showInput, setShowInput] = useState(false);
 
@@ -74,10 +85,46 @@ export const Host = () => {
     setShowInput(!showInput);
   };
 
+  const peticion = async () => {
+    const data = await masPopulares();
+    console.log(data);
+  };
+
   return (
     <>
       {Alerta(severidad, mensaje, open, setOpen, 5000)}
-      <Header Id={Id} Nombre={Nombre}/>
+      <Header Id={Id} Nombre={Nombre} />
+
+      <div className="div_body">
+        <span style={{ fontWeight: "900" }}>
+          {isTendencia ? "Tendencias" : "Busqueda"}
+        </span>
+      </div>
+
+      {/* contenedor de videos de busqueda  */}
+      <VideoCard dataSearch={dataSearch} addVideoList={addVideoList} />
+
+      <div className="div_body">
+        <span style={{ fontWeight: "900" }}>
+         Video Actual
+        </span>
+      </div>
+
+      <Video videoList={videoList} />
+
+      <div className="div_body">
+        <span style={{ fontWeight: "700" }}>
+         Canciones pedidas
+        </span>
+
+        <ul>
+            {listItems.map((item, index) => (
+              <li key={index}>{item}</li>
+            ))}
+          </ul>
+      </div>
+
+
       {/*
       <div className="divInicial">
         <div>
