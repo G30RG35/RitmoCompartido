@@ -5,10 +5,14 @@ import { useForm } from "../../hooks/useForm";
 import MagnifyingGlassIcon from "@heroicons/react/24/outline/MagnifyingGlassIcon";
 import { socket } from "../../socket";
 import ArrowLeftIcon from "@heroicons/react/24/outline/ArrowLeftIcon";
+import { Header } from "../../Componentes/Header/Header";
+import "../../index.css";
+import VideoCard from "../../Componentes/VideoCard/VideoCard";
 
 export const Invitado = () => {
   const { Id, Pass, Nombre } = useParams();
   const [listItems, setListItems] = useState([]);
+  const [sinVideo, setSinVideo] = useState(true);
 
   useEffect(() => {
     socket.emit("BuscarParty", { Id, Pass });
@@ -40,53 +44,39 @@ export const Invitado = () => {
 
   return (
     <>
-      <div className="header">
-        <Grid container spacing={1}>
-          <Grid item xs={3} className="gridCenter">
-            <ArrowLeftIcon
-              onClick={Regresar}
-              style={{ height: "50%", margin: "0 auto" }}
-            />
-          </Grid>
+      <Header Id={Id} Nombre={Nombre} />
 
-          <Grid item xs={6} className="gridCenter">
-            <span style={{ margin: "0 auto" }}>{Nombre}</span>
-          </Grid>
-
-          <Grid item xs={3} className="gridCenter">
-            <div className="red-box-mini " style={{ margin: "0 auto" }}></div>
-          </Grid>
-        </Grid>
+      <div className="div_body">
+        <span style={{ fontWeight: "900" }}>Video Actual</span>
       </div>
 
-      <div className="divInicial">
-        <div className="divmini">
-          <p>Ritmo Compartido</p>
-          <div className="red-box-mini"></div>
-        </div>
-        <p>Nombre de la Fiesta: {Id}</p>
-        <div style={{ display: "flex" }}>
-          <TextField
-            style={{ borderRadius: "1em" }}
-            className="Inputs"
-            id="Id-input"
-            label="Buscar"
-            variant="filled"
-            onChange={onChangeInput}
-            name="Texto"
-            value={dataForm.Texto}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                Buscar();
-              }
-            }}
-          />
-          <Button
-            style={{ margin: "5px" }}
-            onClick={Buscar}
-            variant="contained"
-          >
-            <MagnifyingGlassIcon />
+      {sinVideo ? "Sin video" : (
+        <VideoCard dataSearch={dataSearch} addVideoList={addVideoList} />
+      )}
+
+      {/* <p>Nombre de la Fiesta: {Id}</p>
+          <div style={{ display: "flex" }}>
+            <TextField
+              style={{ borderRadius: "1em" }}
+              className="Inputs"
+              id="Id-input"
+              label="Buscar"
+              variant="filled"
+              onChange={onChangeInput}
+              name="Texto"
+              value={dataForm.Texto}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  Buscar();
+                }
+              }}
+            />
+            <Button
+              style={{ margin: "5px" }}
+              onClick={Buscar}
+              variant="contained"
+            >
+              <MagnifyingGlassIcon />
           </Button>
         </div>
         <div>
@@ -96,8 +86,7 @@ export const Invitado = () => {
               <li key={index}>{item}</li>
             ))}
           </ul>
-        </div>
-      </div>
+        </div> */}
     </>
   );
 };
