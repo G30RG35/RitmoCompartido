@@ -16,7 +16,7 @@ export const Inicio = () => {
   return (
     <>
       <div className="divInicial">
-        <p> Ritmo Compartido</p>
+        <p>Ritmo Compartido</p>
         <div className="red-box"></div>
         <Button onClick={Crear} variant="contained" color="black">
           Crear Party
