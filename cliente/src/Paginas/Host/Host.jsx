@@ -33,12 +33,12 @@ export const Host = () => {
 
   const [isTendencia, setIsTendencia] = useState(true);
 
-  // useEffect(() => {
-  //   console.log("listItems", listItems);
-  //   console.log("videoList", videoList);
-  //   console.log("firstSearch", firstSearch);
-  //   console.log("dataSearch", dataSearch);
-  // }, [listItems,videoList,dataSearch,firstSearch])
+  useEffect(() => {
+    console.log("listItems", listItems);
+    console.log("videoList", videoList);
+    console.log("firstSearch", firstSearch);
+    console.log("dataSearch", dataSearch);
+  }, [listItems,videoList,dataSearch,firstSearch])
 
   const addVideoList = (id, videoid) => {
     const nuevoid = videoid || id;
@@ -58,26 +58,26 @@ export const Host = () => {
     setFirstSearch(true);
   };
 
-  // useEffect(() => {
-  //   socket.on(`PeticionesActualizadas`, (data) => {
-  //     const textArray = data.map((petition) => petition.Texto);
-  //     setListItems(textArray);
-  //   });
+  useEffect(() => {
+    socket.on(`PeticionesActualizadas`, (data) => {
+      const textArray = data.map((petition) => petition.Texto);
+      setListItems(textArray);
+    });
 
-  //   socket.on("SalaBorrada", () => {
-  //     setMensaje("Saliendo de la sala");
-  //     setSeveridad("warning");
-  //     setOpen(true);
-  //     setTimeout(() => {
-  //       navigate("/");
-  //     }, 2000);
-  //   });
+    socket.on("SalaBorrada", () => {
+      setMensaje("Saliendo de la sala");
+      setSeveridad("warning");
+      setOpen(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    });
 
-  //   return () => {
-  //     socket.off("PeticionesActualizadas");
-  //     socket.off("SalaBorrada");
-  //   };
-  // }, [Id, navigate]);
+    return () => {
+      socket.off("PeticionesActualizadas");
+      socket.off("SalaBorrada");
+    };
+  }, [Id, navigate]);
 
   const [showInput, setShowInput] = useState(false);
 
